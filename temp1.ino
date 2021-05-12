@@ -1,5 +1,9 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include "SPI.h"
+#include "Adafruit_BMP280.h"
 #include "DHT.h"
 
 #define DHTPIN1 2     // Digital pin connected to the DHT sensor
@@ -17,7 +21,6 @@ float t_cal=0;
 
 void setup(void)
 {
-  
   Serial.begin(9600);
   sensors.begin();
   dht1.begin();
@@ -34,7 +37,8 @@ void loop(void)
   float h_out = dht2.readHumidity();
   float t_out = dht2.readTemperature();
   float f_out = dht2.readTemperature(true);
-
+  float pressure = bmp.readPressure();
+  
   // Check if any reads failed and exit early (to try again).
   if (isnan(h_in) || isnan(t_in) || isnan(f_in)) {
     Serial.println(F("Failed to read from 'in' DHT sensor!"));
@@ -51,6 +55,8 @@ void loop(void)
   Serial.print(h_out);
   Serial.print(" ");
   Serial.print(t_out);
+  Serial.print(" ");
+  Serial.print(pressure);
   Serial.print(" ");
   Serial.println(t_cal);
   delay(1000);
